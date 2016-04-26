@@ -1,0 +1,197 @@
+---
+title: "Final Report"
+output: html_document
+---
+
+```{r,echo=FALSE,warning=FALSE}
+suppressPackageStartupMessages(library(tseries))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(xts))
+suppressPackageStartupMessages(library(dygraphs))
+suppressPackageStartupMessages(library("forecast"))
+suppressPackageStartupMessages(library("TSA"))
+suppressPackageStartupMessages(library("astsa"))
+```
+
+
+```{r,echo=FALSE,warning=FALSE}
+apple = as.data.frame(get.hist.quote(instrument='AAPL',start='2014-09-08',end='2016-03-31'))
+apple$Date = as.Date(rownames(apple))
+facebook = as.data.frame(get.hist.quote(instrument='FB',start='2014-09-08',end='2016-03-31'))
+facebook$Date = as.Date(rownames(facebook))
+linkedin = as.data.frame(get.hist.quote(instrument='LNKD',start='2014-09-08',end='2016-03-31'))
+linkedin$Date = as.Date(rownames(linkedin))
+linkedin$PriceDiff = linkedin$Close - linkedin$Open
+amazon = as.data.frame(get.hist.quote(instrument='AMZN',start='2014-09-08',end='2016-03-31'))
+amazon$Date = as.Date(rownames(amazon))
+google = as.data.frame(get.hist.quote(instrument='GOOG',start='2014-09-08',end='2016-03-31'))
+google$Date = as.Date(rownames(google))
+microsoft = as.data.frame(get.hist.quote(instrument='MSFT',start='2014-09-08',end='2016-03-31'))
+microsoft$Date = as.Date(rownames(microsoft))
+Alibaba = as.data.frame(get.hist.quote(instrument='BABA',start='2014-09-08',end='2016-03-31'))
+Alibaba$Date = as.Date(rownames(Alibaba))
+SP_500 = as.data.frame(get.hist.quote(instrument='GSPC',start='2014-09-08',end='2016-03-31'))
+SP_500$Date = as.Date(rownames(SP_500))
+
+
+apple_xts <- xts(apple$Close,order.by=apple$Date,frequency=365)
+facebook_xts <- xts(facebook$Close,order.by=facebook$Date,frequency=365)
+linkedin_xts <- xts(linkedin$Close,order.by=linkedin$Date,frequency=365)
+amazon_xts <- xts(amazon$Close,order.by=amazon$Date,frequency=365)
+google_xts <- xts(google$Close,order.by=google$Date,frequency=365)
+microsoft_xts <- xts(microsoft$Close,order.by=microsoft$Date,frequency=365)
+Alibaba_xts <- xts(Alibaba$Close,order.by=Alibaba$Date,frequency=365)
+SP_500_xts <- xts(SP_500$Close,order.by=SP_500$Date,frequency=365)
+
+stocks <- cbind(apple_xts,facebook_xts, linkedin_xts,
+                amazon_xts, google_xts, microsoft_xts,
+                Alibaba_xts,SP_500_xts)
+
+dygraph(stocks,ylab="Close",
+        main="Closing Stock Prices (IB)") %>%
+  dySeries("..1",label="AAPL", strokeWidth = 3) %>%
+  dySeries("..2",label="FB", strokeWidth = 3) %>%
+  dySeries("..3",label="LNKD", strokeWidth = 3) %>%
+  dySeries("..4",label="AMZN", strokeWidth = 3) %>%
+  dySeries("..5",label="GOOG", strokeWidth = 3) %>%
+  dySeries("..6",label="MSFT", strokeWidth = 3) %>%
+  dySeries("..7",label="BABA", strokeWidth = 3) %>%
+  dySeries("..8",label="SP_500", strokeWidth = 3) %>%
+  dyOptions(colors = c("black","orange", "red", "yellow", "green",
+                       "blue","brown")) %>%
+  dyAxis("y", valueRange = c(0, 1000)) %>%
+  dyRangeSelector()
+```
+```{r,echo=FALSE}
+apple = as.data.frame(get.hist.quote(instrument='AAPL',start='2014-09-08',end='2016-03-31'))
+apple$Date = as.Date(rownames(apple))
+facebook = as.data.frame(get.hist.quote(instrument='FB',start='2014-09-08',end='2016-03-31'))
+facebook$Date = as.Date(rownames(facebook))
+linkedin = as.data.frame(get.hist.quote(instrument='LNKD',start='2014-09-08',end='2016-03-31'))
+linkedin$Date = as.Date(rownames(linkedin))
+# linkedin$PriceDiff = linkedin$Close - linkedin$Open
+amazon = as.data.frame(get.hist.quote(instrument='AMZN',start='2014-09-08',end='2016-03-31'))
+amazon$Date = as.Date(rownames(amazon))
+google = as.data.frame(get.hist.quote(instrument='GOOG',start='2014-09-08',end='2016-03-31'))
+google$Date = as.Date(rownames(google))
+microsoft = as.data.frame(get.hist.quote(instrument='MSFT',start='2014-09-08',end='2016-03-31'))
+microsoft$Date = as.Date(rownames(microsoft))
+Alibaba = as.data.frame(get.hist.quote(instrument='BABA',start='2014-09-08',end='2016-03-31'))
+Alibaba$Date = as.Date(rownames(Alibaba))
+SP_500 = as.data.frame(get.hist.quote(instrument='GSPC',start='2014-09-08',end='2016-03-31'))
+SP_500$Date = as.Date(rownames(SP_500))
+
+
+apple_xts <- xts(apple$Close,order.by=apple$Date,frequency=365)
+facebook_xts <- xts(facebook$Close,order.by=facebook$Date,frequency=365)
+linkedin_xts <- xts(linkedin$Close,order.by=linkedin$Date,frequency=365)
+amazon_xts <- xts(amazon$Close,order.by=amazon$Date,frequency=365)
+google_xts <- xts(google$Close,order.by=google$Date,frequency=365)
+microsoft_xts <- xts(microsoft$Close,order.by=microsoft$Date,frequency=365)
+Alibaba_xts <- xts(Alibaba$Close,order.by=Alibaba$Date,frequency=365)
+SP_500_xts <- xts(SP_500$Close,order.by=SP_500$Date,frequency=365)
+
+stocks <- cbind(apple_xts,facebook_xts, linkedin_xts,
+                amazon_xts, google_xts, microsoft_xts,
+                Alibaba_xts,SP_500_xts)
+
+dygraph(stocks,ylab="Close",
+        main="Closing Stock Prices (Internet)") %>%
+  dySeries("..1",label="AAPL", strokeWidth = 3) %>%
+  dySeries("..2",label="FB", strokeWidth = 3) %>%
+  dySeries("..3",label="LNKD", strokeWidth = 3) %>%
+  dySeries("..4",label="AMZN", strokeWidth = 3) %>%
+  dySeries("..5",label="GOOG", strokeWidth = 3) %>%
+  dySeries("..6",label="MSFT", strokeWidth = 3) %>%
+  dySeries("..7",label="BABA", strokeWidth = 3) %>%
+  dySeries("..8",label="SP_500", strokeWidth = 3) %>%
+  dyOptions(colors = c("black","orange", "red", "yellow", "green",
+                       "blue","brown")) %>%
+  dyAxis("y", valueRange = c(0, 1000)) %>%
+  dyRangeSelector()
+```
+
+```{r}
+library("HiddenMarkov")
+# mean1 <- mean(apple$Close[which(states==1)])
+# mean2 <- mean(apple$Close[which(states==2)])
+# mean3 <- mean(apple$Close[which(states==3)])
+# mean4 <- mean(apple$Close[which(states==4)])
+Pi <- matrix(c(1/3, 1/3,1/3, 0,
+               1/4, 1/4, 1/4,1/4,
+               1/4, 1/4, 1/4,1/4,
+               0, 1/3, 1/3, 1/3),byrow=TRUE, nrow=4)
+delta <- c(0.25, 0.25, 0.25, 0.25)
+# x <- dthmm(apple$Close, Pi, delta, "norm",
+#            list(mean=rep(mean(apple$Close),4),sd=c(4,3,2,1)))
+x <- dthmm(apple$Close, Pi, delta, "norm",
+           list(mean=c(mean(apple$Close)-10,mean(apple$Close)-5,
+                       mean(apple$Close)+5,mean(apple$Close)+10),sd=c(4,3,2,1)))
+
+xts <- simulate(x, nsim=1000)
+
+y_fb <- forwardback(apple$Close, Pi, delta, "norm",
+                 list(mean=rep(mean(apple$Close),4),sd=c(5,2,5,2)))
+
+y <- BaumWelch(xts)
+
+print(summary(y))
+
+m=nrow(Pi)
+states <- Viterbi(x)
+states <- factor(states, levels=1:m)
+mu <- y$pm$mean
+sd <- y$pm$sd
+T  <- y$Pi
+real_pi <- y$delta
+N = nrow(apple)
+
+z <- rep(0,N)
+x_pred <- rep(0,N)
+z[1] <- states[length(states)]
+x_pred[1] <- rnorm(1,mu[z[1]],sd[z[1]])
+for (i in 2:N){
+z[i] <- rmultinom(1,1,z[i-1])
+x_pred[i] <- mean(rnorm(15,mu[z[i]],sd[z[i]]))
+}
+
+```
+
+```{r}
+arimaFunc = function(stockname, predSTEP){
+linkedints=ts(stockname$Close,frequency=1)
+head(linkedints)
+plot.ts(linkedints)
+acf(linkedints,100)
+linkedind=diff(log(stockname$Close))
+head(linkedind)
+plot.ts(linkedind)
+acf(linkedind,200,main="ACF")
+pacf(linkedind,200,main="PACF")        
+
+linkedind.ar=auto.arima(linkedints,max.p=15, max.q=15,max.P=12, max.Q=12,max.d=10, max.D=10)
+
+tsdiag(linkedind.ar,gof.lag=20) 
+hist(linkedind.ar$resid,br=12)   
+qqnorm(linkedind.ar$resid)       
+shapiro.test(linkedind.ar$resid)   
+
+linkedind.arforecast = forecast.Arima(linkedind.ar,h=predSTEP)
+plot.forecast(linkedind.arforecast)
+companyPred = linkedind.arforecast
+return(companyPred)
+
+acf(linkedind.arforecast$residuals, lag.max=20)  #residual 看起来互相不相关
+Box.test(linkedind.arforecast$residuals, lag=20, type="Ljung-Box") 
+plot.ts(linkedind.arforecast$residuals)
+plotForecastErrors(linkedind.arforecast$residuals)
+}
+
+predapple = as.data.frame(arimaFunc(apple,15))
+realapple = as.data.frame(get.hist.quote(instrument='AAPL',start='2016-04-01',end='2016-05-01'))
+
+head(predapple)
+head(realapple)
+head(x_pred)
+```
+
