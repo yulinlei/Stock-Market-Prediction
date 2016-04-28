@@ -1,0 +1,44 @@
+---
+title: "final1"
+author: "Fu Wen"
+date: "April 27, 2016"
+output: pdf_document
+---
+
+We build a hidden markov model as the following:  
+```{r, fig.width=10, fig.height=1,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("1.png")
+grid.raster(img)
+```
+
+## Hidden Markov Model
+### Model Set Up:
+T as the number of observations
+$open_{t}$ as the the opening price,   
+$close_{t}$ as the the closing price,   
+$h_t$ as the highest price  
+$l_t$ as the highest price  
+$X_{t}=(open_t,close_t,h_t,l_t), t=1,\cdots,T$ as the observation  
+$Z_{t}\in \{1,2,3,4\}$ as the hidden states 
+
+### Implementation
+We set the input as the opening price, closing price, lowest and highest price and the output as the closing price next day.
+
+Firstly, we use the Bawm-Welch algorithm to estimate the parameters for HMM (the initial
+distribution $\pi$, the transition matrix T, and the emission distributions $\epsilon_i$).
+
+Since the observations are continuous series, we set the emission distributions as multinormal ones:
+\begin{eqnarray*}
+\epsilon_t=p(X_t|Z_t=j)=N(X_t|\mu_{j},V_{j}), j=1,2,3,4
+\end{eqnarray*}
+
+where $\mu_j$ and $V_{j}$ are the mean vector and covariance matrix for the observation at state j.
+
+Secondly, plugging the estimated parameters into forward algorithm, we can get $s_j(z_j)=p(x_{1:j},z_j)$ and then we can calculate:
+\begin{eqnarray*}
+p(x_{j+1}|x_{1:j}) &\propto p(x_{1:j},x_{j+1}) = \sum_{z_j,z_{j+1}} p(x_{1:j},x_{j+1},z_j,z_{j+1})\\
+& = \sum_{z_j,z_{j+1}}p(x_{1:j},z_j)p(z_{j+1}|z_j)p(x_{j+1}|z_{j+1})
+\end{eqnarray*}
+
