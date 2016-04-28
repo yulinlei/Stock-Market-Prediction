@@ -11,6 +11,7 @@ suppressPackageStartupMessages(library(dygraphs))
 suppressPackageStartupMessages(library("forecast"))
 suppressPackageStartupMessages(library("TSA"))
 suppressPackageStartupMessages(library("astsa"))
+suppressPackageStartupMessages(library(neuralnet))
 ```
 
 
@@ -22,54 +23,6 @@ facebook$Date = as.Date(rownames(facebook))
 linkedin = as.data.frame(get.hist.quote(instrument='LNKD',start='2014-09-08',end='2016-03-31'))
 linkedin$Date = as.Date(rownames(linkedin))
 linkedin$PriceDiff = linkedin$Close - linkedin$Open
-amazon = as.data.frame(get.hist.quote(instrument='AMZN',start='2014-09-08',end='2016-03-31'))
-amazon$Date = as.Date(rownames(amazon))
-google = as.data.frame(get.hist.quote(instrument='GOOG',start='2014-09-08',end='2016-03-31'))
-google$Date = as.Date(rownames(google))
-microsoft = as.data.frame(get.hist.quote(instrument='MSFT',start='2014-09-08',end='2016-03-31'))
-microsoft$Date = as.Date(rownames(microsoft))
-Alibaba = as.data.frame(get.hist.quote(instrument='BABA',start='2014-09-08',end='2016-03-31'))
-Alibaba$Date = as.Date(rownames(Alibaba))
-SP_500 = as.data.frame(get.hist.quote(instrument='GSPC',start='2014-09-08',end='2016-03-31'))
-SP_500$Date = as.Date(rownames(SP_500))
-
-
-apple_xts <- xts(apple$Close,order.by=apple$Date,frequency=365)
-facebook_xts <- xts(facebook$Close,order.by=facebook$Date,frequency=365)
-linkedin_xts <- xts(linkedin$Close,order.by=linkedin$Date,frequency=365)
-amazon_xts <- xts(amazon$Close,order.by=amazon$Date,frequency=365)
-google_xts <- xts(google$Close,order.by=google$Date,frequency=365)
-microsoft_xts <- xts(microsoft$Close,order.by=microsoft$Date,frequency=365)
-Alibaba_xts <- xts(Alibaba$Close,order.by=Alibaba$Date,frequency=365)
-SP_500_xts <- xts(SP_500$Close,order.by=SP_500$Date,frequency=365)
-
-stocks <- cbind(apple_xts,facebook_xts, linkedin_xts,
-                amazon_xts, google_xts, microsoft_xts,
-                Alibaba_xts,SP_500_xts)
-
-dygraph(stocks,ylab="Close",
-        main="Closing Stock Prices (IB)") %>%
-  dySeries("..1",label="AAPL", strokeWidth = 3) %>%
-  dySeries("..2",label="FB", strokeWidth = 3) %>%
-  dySeries("..3",label="LNKD", strokeWidth = 3) %>%
-  dySeries("..4",label="AMZN", strokeWidth = 3) %>%
-  dySeries("..5",label="GOOG", strokeWidth = 3) %>%
-  dySeries("..6",label="MSFT", strokeWidth = 3) %>%
-  dySeries("..7",label="BABA", strokeWidth = 3) %>%
-  dySeries("..8",label="SP_500", strokeWidth = 3) %>%
-  dyOptions(colors = c("black","orange", "red", "yellow", "green",
-                       "blue","brown")) %>%
-  dyAxis("y", valueRange = c(0, 1000)) %>%
-  dyRangeSelector()
-```
-```{r,echo=FALSE}
-apple = as.data.frame(get.hist.quote(instrument='AAPL',start='2014-09-08',end='2016-03-31'))
-apple$Date = as.Date(rownames(apple))
-facebook = as.data.frame(get.hist.quote(instrument='FB',start='2014-09-08',end='2016-03-31'))
-facebook$Date = as.Date(rownames(facebook))
-linkedin = as.data.frame(get.hist.quote(instrument='LNKD',start='2014-09-08',end='2016-03-31'))
-linkedin$Date = as.Date(rownames(linkedin))
-# linkedin$PriceDiff = linkedin$Close - linkedin$Open
 amazon = as.data.frame(get.hist.quote(instrument='AMZN',start='2014-09-08',end='2016-03-31'))
 amazon$Date = as.Date(rownames(amazon))
 google = as.data.frame(get.hist.quote(instrument='GOOG',start='2014-09-08',end='2016-03-31'))
@@ -110,8 +63,55 @@ dygraph(stocks,ylab="Close",
   dyAxis("y", valueRange = c(0, 1000)) %>%
   dyRangeSelector()
 ```
+```{r,echo=FALSE}
+Goldman = as.data.frame(get.hist.quote(instrument='GS',start='2014-09-06',end='2016-03-31'))
+Goldman$Date = as.Date(rownames(Goldman))
+JPMorgan = as.data.frame(get.hist.quote(instrument='JPM',start='2014-09-06',end='2016-03-31'))
+JPMorgan$Date = as.Date(rownames(JPMorgan))
+MorganStanley = as.data.frame(get.hist.quote(instrument='MS',start='2014-09-06',end='2016-03-31'))
+MorganStanley$Date = as.Date(rownames(MorganStanley))
+Merrill_Lynch = as.data.frame(get.hist.quote(instrument='MER',start='2014-09-06',end='2016-03-31'))
+Merrill_Lynch$Date = as.Date(rownames(Merrill_Lynch))
+Deutsche = as.data.frame(get.hist.quote(instrument='DB',start='2014-09-06',end='2016-03-31'))
+Deutsche$Date = as.Date(rownames(Deutsche))
+Barclays = as.data.frame(get.hist.quote(instrument='BCS',start='2014-09-06',end='2016-03-31'))
+Barclays$Date = as.Date(rownames(Barclays))
+UBS = as.data.frame(get.hist.quote(instrument='UBS',start='2014-09-06',end='2016-03-31'))
+UBS$Date = as.Date(rownames(UBS))
+Citi = as.data.frame(get.hist.quote(instrument='C',start='2014-09-06',end='2016-03-31'))
+Citi$Date = as.Date(rownames(Citi))
 
-```{r}
+Goldman_xts <- xts(Goldman$Close,order.by=Goldman$Date,frequency=365)
+JPMorgan_xts <- xts(JPMorgan$Close,order.by=JPMorgan$Date,frequency=365)
+MorganStanley_xts <- xts(MorganStanley$Close,order.by=MorganStanley$Date,frequency=365)
+Merrill_Lynch_xts <- xts(Merrill_Lynch$Close,order.by=Merrill_Lynch$Date,frequency=365)
+Deutsche_xts <- xts(Deutsche$Close,order.by=Deutsche$Date,frequency=365)
+Barclays_xts <- xts(Barclays$Close,order.by=Barclays$Date,frequency=365)
+UBS_xts <- xts(UBS$Close,order.by=UBS$Date,frequency=365)
+Citi_xts <- xts(Citi$Close,order.by=Citi$Date,frequency=365)
+
+stocks_IB <- cbind(Goldman_xts,JPMorgan_xts, MorganStanley_xts,
+                Merrill_Lynch_xts, Deutsche_xts, Barclays_xts,
+                UBS_xts,Citi_xts)
+
+dygraph(stocks_IB,ylab="Close",
+        main="Closing Stock Prices (Investment Bank)") %>%
+  dySeries("..1",label="GS", strokeWidth = 3) %>%
+  dySeries("..2",label="JPM", strokeWidth = 3) %>%
+  dySeries("..3",label="MS", strokeWidth = 3) %>%
+  dySeries("..4",label="MER", strokeWidth = 3) %>%
+  dySeries("..5",label="DB", strokeWidth = 3) %>%
+  dySeries("..6",label="BCS", strokeWidth = 3) %>%
+  dySeries("..7",label="UBS", strokeWidth = 3) %>%
+  dySeries("..8",label="Citi", strokeWidth = 3) %>%
+  dyOptions(colors = c("black","orange", "red", "yellow", "green",
+                       "blue","brown"),animatedZooms=T) %>%
+  dyAxis("y", valueRange = c(0, 400)) %>%
+  dyRangeSelector()
+
+```
+
+```{r,eval=FALSE,echo=FALSE}
 library("HiddenMarkov")
 # mean1 <- mean(apple$Close[which(states==1)])
 # mean2 <- mean(apple$Close[which(states==2)])
@@ -157,13 +157,15 @@ x_pred[i] <- mean(rnorm(15,mu[z[i]],sd[z[i]]))
 
 ```
 
+
+**Time Series Forecasting:**\newline
 ```{r}
 arimaFunc = function(stockname, predSTEP){
 linkedints=ts(stockname$Close,frequency=1)
 head(linkedints)
 plot.ts(linkedints)
 acf(linkedints,100)
-linkedind=diff(log(stockname$Close))
+linkedind=diff(diff(diff(log(stockname$Close))))
 head(linkedind)
 plot.ts(linkedind)
 acf(linkedind,200,main="ACF")
@@ -181,17 +183,215 @@ plot.forecast(linkedind.arforecast)
 companyPred = linkedind.arforecast
 return(companyPred)
 
-acf(linkedind.arforecast$residuals, lag.max=20)  #residual 看起来互相不相关
+acf(linkedind.arforecast$residuals, lag.max=20) 
 Box.test(linkedind.arforecast$residuals, lag=20, type="Ljung-Box") 
 plot.ts(linkedind.arforecast$residuals)
 plotForecastErrors(linkedind.arforecast$residuals)
 }
 
-predapple = as.data.frame(arimaFunc(apple,15))
-realapple = as.data.frame(get.hist.quote(instrument='AAPL',start='2016-04-01',end='2016-05-01'))
+# predapple = as.data.frame(arimaFunc(apple,15))
+# realapple = as.data.frame(get.hist.quote(instrument='AAPL',start='2016-04-01',end='2016-05-01'))
+# 
+# head(predapple)
+# head(realapple)
+# head(x_pred)
 
-head(predapple)
-head(realapple)
-head(x_pred)
+```
+
+```{r}
+pmts=ts(amazon$Close,frequency=1)
+par(mfrow=c(2,2))
+# acf(pmts,100)
+acf(diff(diff(pmts)),100,main="ACF")
+pacf(diff(diff(pmts)),100,main="PACF")
+spectrum(pmts)
+a=spec.pgram(diff(pmts),taper=0,log="no",main="Raw Periodogram")
+# abline(v=1/5,lty="dotted")
+# testarma=Arima(pmts,order=c(8,0,2))
+# pmdarmaforecast=forecast.Arima(testarma,h=25)
+ par(mfrow=c(2,1))
+# plot.forecast(pmdarmaforecast)
+
+spm0=Arima(pmts,order=c(8,1,2),seasonal=list(order=c(1,1,0),period=8))
+#spm0$aic
+pmdarmaforecast1=forecast.Arima(spm0,h=25)
+
+plot.forecast(pmdarmaforecast1,ylim=c(250,700),main="Forecast")
+
+amazon_real = as.data.frame(get.hist.quote(instrument='AMZN',start='2014-09-08',end='2016-4-30'))
+
+plot.ts(amazon_real$Close,ylim=c(250,700),main="Amazon")
+```
+
+```{r}
+pmts=ts(facebook$Close,frequency=1)
+par(mfrow=c(2,2))
+# acf(pmts,100)
+acf(diff(diff(pmts)),100,main="ACF")
+pacf(diff(diff(pmts)),100,main="PACF")
+spectrum(diff(diff(pmts)))
+a=spec.pgram(diff(diff(pmts)),taper=0,log="no",main="Raw Periodogram")
+# abline(v=1/5,lty="dotted")
+testarma=Arima(pmts,order=c(9,2,2))
+pmdarmaforecast=forecast.Arima(testarma,h=27)
+par(mfrow=c(2,1))
+plot.forecast(pmdarmaforecast,ylim=c(70,130),main="Forecast")
+
+facebook_real = as.data.frame(get.hist.quote(instrument='FB',start='2014-09-08',end='2016-4-30'))
+plot.ts(facebook_real$Close,ylim=c(70,130),main="Facebook")
+```
+
+```{r}
+pmts_l=ts(linkedin$Close,frequency=1)
+par(mfrow=c(2,2))
+# acf(pmts_l,100)
+acf(diff(diff(pmts_l)),100,main="ACF")
+pacf(diff(diff(pmts_l)),100,main="PACF")
+spectrum(pmts_l)
+a=spec.pgram(diff(pmts_l),taper=0,log="no",main="Raw Periodogram")
+# abline(v=1/5,lty="dotted")
+testarma_l=Arima(pmts_l,order=c(7,1,2))
+pmdarmaforecast_l=forecast.Arima(testarma_l,h=25)
+par(mfrow=c(2,1))
+plot.forecast(pmdarmaforecast_l,main="Forecast")
+
+linkedin_real = as.data.frame(get.hist.quote(instrument='LNKD',start='2014-09-08',end='2016-4-30'))
+
+plot.ts(linkedin_real$Close,main="Linkedin")
+```
+
+```{r}
+pmts=ts(google$Close,frequency=1)
+par(mfrow=c(2,2))
+# acf(pmts,100)
+acf(diff(diff(pmts)),100)
+pacf(diff(diff(pmts)),100)
+spectrum(pmts)
+a=spec.pgram(diff(pmts),taper=0,log="no",main="Raw Periodogram")
+# abline(v=1/5,lty="dotted")
+testarma=Arima(pmts,order=c(8,0,1))
+pmdarmaforecast=forecast.Arima(testarma,h=25)
+par(mfrow=c(2,1))
+plot.forecast(pmdarmaforecast,main="Forecast")
+
+google_real = as.data.frame(get.hist.quote(instrument='GOOG',start='2014-09-08',end='2016-4-30'))
+plot.ts(google_real$Close,main="Google")
+```
+
+
+
+
+
+
+**Problems:**\newline
+
+1. Time series only takes the past Close price while the forecast Close price may also depend on other factors.\newline
+
+2. Forecasting time series can be a very hard task due to the inherent uncertainty nature of these systems. It seems very difficult to tell whether a series is stochastic or deterministic chaotic or some combination of these states. More generally, the extent to which a non-linear deterministic process retains its properties when corrupted by noise is also unclear. The noise can affect a system in different ways even though the equations of the system remain deterministic. Since a single reliable statistical test for chaoticity is not available, combining multiple tests is a crucial aspect, especially when one is dealing with limited and noisy data sets like in economic and financial time series.\newline
+
+3. The problem with using time series analysis as a tool for predicting in finance is that the underlying structure of the data is not ARIMA nor some combination of periodic functions so time series will not work. For differencing used in ARIMA, it has disadvantages including over-correcting for trends, which skews the correlations in a negative direction.
+
+
+**Neural Network**\newline
+```{r}
+
+lastclose1 = tail(linkedin$Close,60)
+lastopen1 = tail(linkedin$Open,60)
+lasthigh1 = tail(linkedin$High,60)
+lastlow1 = tail(linkedin$Low,60)
+
+lastclose2 = linkedin$Close[275:334]
+lastopen2 = linkedin$Open[275:334]
+lasthigh2 = linkedin$High[275:334]
+lastlow2 = linkedin$Low[275:334]
+
+lastclose3 = linkedin$Close[215:274]
+lastopen3 = linkedin$Open[215:274]
+lasthigh3 = linkedin$High[215:274]
+lastlow3 = linkedin$Low[215:274]
+
+lastclose4 = linkedin$Close[155:214]
+lastopen4 = linkedin$Open[155:214]
+lasthigh4 = linkedin$High[155:214]
+lastlow4 = linkedin$Low[155:214]
+
+lastclose5 = linkedin$Close[95:154]
+lastopen5 = linkedin$Open[95:154]
+lasthigh5 = linkedin$High[95:154]
+lastlow5 = linkedin$Low[95:154]
+
+test_data <- data.frame(cbind(lastclose1,lastopen1,lasthigh1,lastlow1,
+                               lastclose2,lastopen2,lasthigh2,lastlow2,
+                               lastclose3,lastopen3,lasthigh3,lastlow3,
+                               lastclose4,lastopen4,lasthigh4,lastlow4
+                               ))
+
+train_data <- data.frame(cbind(lastclose2,lastopen2,lasthigh2,lastlow2,
+                         lastclose3,lastopen3,lasthigh3,lastlow3,
+                         lastclose4,lastopen4,lasthigh4,lastlow4,
+                         lastclose5,lastopen5,lasthigh5,lastlow5))
+colnames(train_data) <- c("lastclose1","lastopen1","lasthigh1","lastlow1",
+                          "lastclose2","lastopen2","lasthigh2","lastlow2",
+                          "lastclose3","lastopen3","lasthigh3","lastlow3",
+                          "lastclose4","lastopen4","lasthigh4","lastlow4")
+#You can choose different methods to scale the data (z-normalization, min-max scale, etc…).
+#I chose to use the min-max method and scale the data in the interval [0,1].
+#Usually scaling in the intervals [0,1] or [-1,1] tends to give better results.
+maxs <- apply(train_data, 2, max)
+mins <- apply(train_data, 2, min)
+scaled_train <- as.data.frame(scale(train_data, center = mins, scale = maxs - mins))
+maxs <- apply(test_data, 2, max)
+mins <- apply(test_data, 2, min)
+scaled_test <- as.data.frame(scale(test_data, center = mins, scale = maxs - mins))
+
+#Train nn with scaled training data
+set.seed(123)
+net_linkedin_last <- neuralnet(lastclose1 ~(lastclose2+lastopen2+lasthigh2+lastlow2+
+                                        lastclose3+lastopen3+lasthigh3+lastlow3+
+                                         lastclose4+lastopen4+lasthigh4+lastlow4),
+                               scaled_train, err.fct = "sse", hidden = c(14,3),
+                            threshold=0.001,likelihood = TRUE,linear.output = TRUE)
+# plot(net_linkedin_last)
+
+net.results_last <- compute(net_linkedin_last, scaled_train[,5:16])
+pr.nn_last <- net.results_last$net.result
+plot.ts(train_data$lastclose1,ylab="lastclose1")
+par(new=TRUE)
+plot.ts(pr.nn_last,col='red',yaxt="n",ylab="")
+```
+![](/Users/YY/Documents/DUKE/Courses/2016Spring/STA531/FinalProject/NN.png)
+```{r}
+net.results_last <- compute(net_linkedin_last, scaled_test[,5:16])
+pr.nn_last <- net.results_last$net.result
+plot.ts(test_data$lastclose1,ylab="lastclose1")
+# plot.ts(train_data$lastclose1)
+par(new=TRUE)
+plot.ts(pr.nn_last,col='red',yaxt="n",ylab="")
+
+# plot(scaled_test$lastclose1,pr.nn_last,col='red',main='Real vs predicted NN',pch=18,cex=0.7)
+# abline(0,1,lwd=2)
+# legend('bottomright',legend='NN',pch=18,col='red', bty='n')
+```
+
+Artificial neural network:
+Artificial neural network (ANN) is a machine learning model to estimate the function of inputs. It is composed of many neuron-like nodes which have connections with each other.
+
+We construct a model by utilizing the high price, low price, open price, closed price of last 3 time periods to predict all these prices of the next period. With this ANN model, stock price can be predicted by historical data. The inputs are the data of last 3 time periods and the outputs are the stock prices we would like to predict. Here we assume that the relationship between the last 3 time periods and the next time period is roughly stable so that we can utilize the model based on historical data to predict future data.
+
+
+
+```{r}
+set.seed(123)
+net_linkedin_last <- neuralnet(lastclose1 ~(lastclose2+lastopen2+lasthigh2+lastlow2+
+                                        lastclose3+lastopen3+lasthigh3+lastlow3+
+                                         lastclose4+lastopen4+lasthigh4+lastlow4),
+                               scaled_train, err.fct = "sse", hidden = c(14,3),
+                            threshold=0.001,linear.output = TRUE,
+                            likelihood = TRUE)
+net.results_last <- compute(net_linkedin_last, scaled_test[,5:16])
+pr.nn_last <- net.results_last$net.result
+plot.ts(test_data$lastclose1)
+par(new=TRUE)
+plot.ts(pr.nn_last,col='red')
 ```
 
